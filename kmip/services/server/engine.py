@@ -72,7 +72,7 @@ class KmipEngine(object):
         * Cryptographic usage mask enforcement per object type
     """
 
-    def __init__(self, policies=None, database_path=None):
+    def __init__(self, policies=None, database_path=None, logger=None):
         """
         Create a KmipEngine.
 
@@ -84,7 +84,7 @@ class KmipEngine(object):
                 used to store all server data. Optional, defaults to None.
                 If none, database path defaults to '/tmp/pykmip.database'.
         """
-        self._logger = logging.getLogger('kmip.server.engine')
+        self._logger = logger
 
         self._cryptography_engine = engine.CryptographyEngine()
 
@@ -354,6 +354,7 @@ class KmipEngine(object):
 
     def _process_batch(self, request_batch, batch_handling, batch_order):
         response_batch = list()
+        self._id_placeholder = None
 
         with self._data_store_session_factory() as session:
             self._data_session = session
@@ -2466,6 +2467,9 @@ class KmipEngine(object):
         response_payload = payloads.LocateResponsePayload(
             unique_identifiers=unique_identifiers
         )
+
+        if len(managed_objects) == 1:
+            self._id_placeholder = str(managed_objects[0].unique_identifier)
 
         return response_payload
 

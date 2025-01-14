@@ -261,7 +261,8 @@ class KmipServer(object):
 
         self._engine = engine.KmipEngine(
             policies=self.policies,
-            database_path=self.config.settings.get('database_path')
+            database_path=self.config.settings.get('database_path'),
+            logger = self._logger
         )
 
         self._logger.info("Starting server socket handler.")
