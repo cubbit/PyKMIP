@@ -35,6 +35,92 @@ You can install PyKMIP via ``pip``:
 
 See `Installation`_ for more information.
 
+---
+
+Containerization
+----------------
+
+PyKMIP can be containerized for local development, testing, and production deployments using Docker. The project includes Makefile targets to simplify image building and publishing workflows.
+
+Docker Build
+~~~~~~~~~~~~
+
+Build the Docker image locally:
+
+.. code-block:: console
+
+    $ make build
+
+This produces a local image tagged with the default version (``latest`` or git-based tag).
+
+Custom Image Build (CI/CD)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can override the image reference using the ``IMG`` variable:
+
+.. code-block:: console
+
+    $ IMG=registry.cubbit.io/pykmip:latest make docker-build
+
+This is useful for CI/CD pipelines where image naming is controlled externally.
+
+Multi-Architecture Build
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For production use cases, PyKMIP supports multi-architecture builds using Docker Buildx:
+
+.. code-block:: console
+
+    $ make build-multi
+
+This builds and publishes images for:
+
+- linux/amd64
+- linux/arm64
+
+The resulting image is pushed directly to the configured container registry.
+
+Image Versioning
+~~~~~~~~~~~~~~~~
+
+Images are versioned using git metadata when available, or fall back to ``latest``:
+
+- ``registry.cubbit.io/pykmip:<git-tag-or-sha>``
+- ``registry.cubbit.io/pykmip:latest``
+
+Troubleshooting
+~~~~~~~~~~~~~~~
+
+Build failures or runtime issues are often related to image tagging or registry mismatches.
+
+Common issues include:
+
+Incorrect image reference
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Ensure the image name matches your registry format:
+
+.. code-block:: console
+
+    registry.cubbit.io/pykmip:latest
+
+Manifest or architecture issues
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If using multi-architecture builds, ensure Docker Buildx is enabled:
+
+.. code-block:: console
+
+    docker buildx ls
+
+Recreate builder if needed:
+
+.. code-block:: console
+
+    docker buildx create --use
+
+---
+
 Community
 ---------
 The PyKMIP community has various forums and resources you can use:
